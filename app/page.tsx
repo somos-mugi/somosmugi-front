@@ -9,6 +9,7 @@ const Arrow = () => <span aria-hidden="true" className="arrow">↗</span>;
 export default function Home() {
   return (
     <main>
+      <MotionEffects />
       <section className="hero" id="inicio">
         <nav className="nav wrap" aria-label="Navegación principal">
           <a className="brand" href="#inicio" aria-label="SomosMugi, inicio">somos<span>mugi</span><i /></a>
@@ -28,10 +29,10 @@ export default function Home() {
             <a className="round-link" href="#que-hacemos" aria-label="Descubrir SomosMugi">↓</a>
           </div>
         </div>
-        <div className="hero-orb" aria-hidden="true"><span /></div>
-        <img className="mugi-mascot" src="/mugi-mascot.svg" alt="Mugi, la mascota de SomosMugi con sombrero de paja" />
-        <div className="cloud cloud-a" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
-        <div className="cloud cloud-b" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
+        <div className="hero-orb" data-parallax="0.35" aria-hidden="true"><span /></div>
+        <img className="mugi-mascot" data-mugi src="/mugi-mascot.svg" alt="Mugi, la mascota de SomosMugi con sombrero de paja" />
+        <div className="cloud cloud-a" data-parallax="1.1" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
+        <div className="cloud cloud-b" data-parallax="0.7" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
         <p className="scroll-note">SCROLL PARA EXPLORAR</p>
       </section>
 
@@ -86,3 +87,4 @@ export default function Home() {
     </main>
   );
 }
+import { MotionEffects } from "../components/motion-effects";

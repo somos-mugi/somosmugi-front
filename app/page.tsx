@@ -29,6 +29,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-orb" aria-hidden="true"><span /></div>
+        <img className="mugi-mascot" src="/mugi-mascot.svg" alt="Mugi, la mascota de SomosMugi con sombrero de paja" />
         <div className="cloud cloud-a" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
         <div className="cloud cloud-b" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
         <p className="scroll-note">SCROLL PARA EXPLORAR</p>

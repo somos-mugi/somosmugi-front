@@ -8,6 +8,42 @@ export function MugiMascot() {
   const dragging = useRef<{ pointerId: number; startX: number; startY: number } | null>(null);
   const hasMoved = useRef(false);
   const returnTimer = useRef<ReturnType<typeof setTimeout>>();
+  const legFrame = useRef<number>(0);
+  const legStart = useRef<number>(0);
+
+  // Anima las patas via JS para evitar conflictos con el transform SVG attribute
+  const startLegAnimation = () => {
+    legStart.current = performance.now();
+    const tick = (now: number) => {
+      const el = ref.current;
+      if (!el || !el.classList.contains("is-dragging")) return;
+      const t = (now - legStart.current) / 500; // ciclo de 500ms
+      const kick = Math.sin(t * Math.PI * 2) * 18;
+      const mouthScale = 1 + Math.sin(t * Math.PI * 2) * 0.18; // oscila entre 0.82 y 1.18
+
+      const legL = el.querySelector<SVGElement>(".mugi-leg-l");
+      const legR = el.querySelector<SVGElement>(".mugi-leg-r");
+      const mouth = el.querySelector<SVGElement>(".mugi-mouth");
+      if (legL) legL.setAttribute("transform", `translate(0 ${-kick}) rotate(-24 125.7 350)`);
+      if (legR) legR.setAttribute("transform", `translate(0 ${kick}) rotate(24 314.3 350)`);
+      if (mouth) mouth.setAttribute("transform", `translate(220 325) scale(1 ${mouthScale}) translate(-220 -325)`);
+
+      legFrame.current = requestAnimationFrame(tick);
+    };
+    legFrame.current = requestAnimationFrame(tick);
+  };
+
+  const stopLegAnimation = () => {
+    cancelAnimationFrame(legFrame.current);
+    const el = ref.current;
+    if (!el) return;
+    const legL = el.querySelector<SVGElement>(".mugi-leg-l");
+    const legR = el.querySelector<SVGElement>(".mugi-leg-r");
+    const mouth = el.querySelector<SVGElement>(".mugi-mouth");
+    if (legL) legL.removeAttribute("transform");
+    if (legR) legR.removeAttribute("transform");
+    if (mouth) mouth.removeAttribute("transform");
+  };
 
   useEffect(() => {
     const el = ref.current;
@@ -21,6 +57,7 @@ export function MugiMascot() {
       el.setPointerCapture(e.pointerId);
       el.classList.add("is-dragging");
       setLaughing(true);
+      startLegAnimation();
     };
 
     const onMove = (e: PointerEvent) => {
@@ -43,6 +80,7 @@ export function MugiMascot() {
       el.classList.remove("is-dragging");
       el.style.setProperty("--drag-x", "0px");
       el.style.setProperty("--drag-y", "0px");
+      stopLegAnimation();
       returnTimer.current = setTimeout(() => setLaughing(false), wasClick ? 700 : 1100);
     };
 
@@ -56,6 +94,7 @@ export function MugiMascot() {
       el.removeEventListener("pointerup", onUp);
       el.removeEventListener("pointercancel", onUp);
       clearTimeout(returnTimer.current);
+      cancelAnimationFrame(legFrame.current);
     };
   }, []);
 
@@ -94,7 +133,7 @@ function MugiNormal() {
       </g>
 
       {/* cuerpo */}
-      <ellipse cx="222" cy="289" rx="130" ry="108" fill="#8B62FF"/>
+      <ellipse className="mugi-body" cx="222" cy="289" rx="130" ry="108" fill="#8B62FF"/>
       <ellipse cx="222" cy="299" rx="113" ry="91" fill="#9C78FF"/>
       {/* ojos */}
       <ellipse cx="170" cy="276" rx="21" ry="26" fill="#24163D"/>
@@ -107,8 +146,8 @@ function MugiNormal() {
       <ellipse cx="140" cy="311" rx="21" ry="11" fill="#E6D9FF"/>
       <ellipse cx="304" cy="311" rx="21" ry="11" fill="#E6D9FF"/>
       {/* patas */}
-      <ellipse cx="151" cy="384" rx="40" ry="22" fill="#7150CC"/>
-      <ellipse cx="291" cy="384" rx="40" ry="22" fill="#7150CC"/>
+      <ellipse className="mugi-leg mugi-leg-l" cx="151" cy="384" rx="40" ry="22" fill="#7150CC"/>
+      <ellipse className="mugi-leg mugi-leg-r" cx="291" cy="384" rx="40" ry="22" fill="#7150CC"/>
       {/* sombrero */}
       <g transform="translate(0 28)">
         <path d="M87 182c2-42 61-73 135-73s133 31 135 73c-18 22-47 35-83 39H170c-36-4-65-17-83-39Z" fill="#EAD99F" stroke="#D0B86A" strokeWidth="3"/>
@@ -143,15 +182,15 @@ function MugiLaugh() {
       <path d="M93 271c22-17 47-15 65 4M335 168c19-14 40-12 55 5" stroke="#D4C6FF" strokeWidth="3" strokeLinecap="round" pointerEvents="none"/>
 
       {/* cuerpo */}
-      <ellipse cx="220" cy="285" rx="128" ry="105" fill="#8B62FF"/>
+      <ellipse className="mugi-body" cx="220" cy="285" rx="128" ry="105" fill="#8B62FF"/>
       <ellipse cx="220" cy="295" rx="111" ry="88" fill="#9C78FF"/>
       {/* patas */}
-      <ellipse cx="107" cy="354" rx="23" ry="46" transform="rotate(-24 107 354)" fill="#7150CC"/>
-      <ellipse cx="333" cy="354" rx="23" ry="46" transform="rotate(24 333 354)" fill="#7150CC"/>
+      <ellipse className="mugi-leg mugi-leg-l" cx="107" cy="354" rx="23" ry="46" transform="rotate(-24 107 354)" fill="#7150CC"/>
+      <ellipse className="mugi-leg mugi-leg-r" cx="333" cy="354" rx="23" ry="46" transform="rotate(24 333 354)" fill="#7150CC"/>
       {/* ojos (X de risa) */}
       <path d="M148 271l20 15-20 15M292 271l-20 15 20 15" stroke="#24163D" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
       {/* boca abierta */}
-      <path d="M190 310c18 9 42 9 60 0 0 34-13 48-30 48s-30-14-30-48Z" fill="#F16F9D" stroke="#24163D" strokeWidth="5" strokeLinejoin="round"/>
+      <path className="mugi-mouth" d="M190 310c18 9 42 9 60 0 0 34-13 48-30 48s-30-14-30-48Z" fill="#F16F9D" stroke="#24163D" strokeWidth="5" strokeLinejoin="round"/>
       {/* mejillas */}
       <ellipse cx="141" cy="314" rx="22" ry="11" fill="#E6D9FF"/>
       <ellipse cx="299" cy="314" rx="22" ry="11" fill="#E6D9FF"/>

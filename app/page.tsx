@@ -28,7 +28,9 @@ export default function Home() {
             <a className="round-link" href="#que-hacemos" aria-label="Descubrir SomosMugi">↓</a>
           </div>
         </div>
-        <div className="sun" aria-hidden="true"><span /></div>
+        <div className="hero-orb" aria-hidden="true"><span /></div>
+        <div className="cloud cloud-a" aria-hidden="true"><i /><i /><i /><i /></div>
+        <div className="cloud cloud-b" aria-hidden="true"><i /><i /><i /><i /></div>
         <p className="scroll-note">SCROLL PARA EXPLORAR</p>
       </section>
 
@@ -63,6 +65,7 @@ export default function Home() {
         <p className="section-label">(03) NUESTRA FORMA</p>
         <p className="manifesto-text">No creemos en las fórmulas. Creemos en <em>escuchar</em>, pensar y hacer con intención.</p>
         <div className="shape shape-two" aria-hidden="true" />
+        <div className="cloud cloud-c" aria-hidden="true"><i /><i /><i /><i /></div>
       </section>
 
       <section className="contact" id="contacto">

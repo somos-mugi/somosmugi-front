@@ -7,7 +7,7 @@ export function MugiMascot() {
   const ref = useRef<SVGSVGElement>(null);
   const dragging = useRef<{ pointerId: number; startX: number; startY: number } | null>(null);
   const hasMoved = useRef(false);
-  const returnTimer = useRef<ReturnType<typeof setTimeout>>();
+  const returnTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const legFrame = useRef<number>(0);
   const legStart = useRef<number>(0);
 

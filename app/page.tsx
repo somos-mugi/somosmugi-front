@@ -30,7 +30,7 @@ export default function Home() {
           </div>
         </div>
         <div className="hero-orb" data-parallax="0.35" aria-hidden="true"><span /></div>
-        <img className="mugi-mascot" data-mugi src="/mugi-mascot.svg" alt="Mugi, la mascota de SomosMugi con sombrero de paja" />
+        <MugiMascot />
         <div className="cloud cloud-a" data-parallax="1.1" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
         <div className="cloud cloud-b" data-parallax="0.7" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /></div>
         <p className="scroll-note">SCROLL PARA EXPLORAR</p>
@@ -88,3 +88,4 @@ export default function Home() {
   );
 }
 import { MotionEffects } from "../components/motion-effects";
+import { MugiMascot } from "../components/mugi-mascot";

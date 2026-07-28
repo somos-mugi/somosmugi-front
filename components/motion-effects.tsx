@@ -10,7 +10,7 @@ export function MotionEffects() {
     if (!hero) return;
 
     const parallaxItems = Array.from(hero.querySelectorAll<HTMLElement>("[data-parallax]"));
-    const mascot = hero.querySelector<HTMLElement>("[data-mugi]");
+    const mascot = hero.querySelector<SVGElement>("[data-mugi]");
     let frame = 0;
 
     const reset = () => {
@@ -41,6 +41,7 @@ export function MotionEffects() {
 
     hero.addEventListener("pointermove", onMove);
     hero.addEventListener("pointerleave", reset);
+
     return () => {
       cancelAnimationFrame(frame);
       hero.removeEventListener("pointermove", onMove);

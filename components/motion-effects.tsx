@@ -10,7 +10,7 @@ export function MotionEffects() {
     if (!hero) return;
 
     const parallaxItems = Array.from(hero.querySelectorAll<HTMLElement>("[data-parallax]"));
-    const mascot = hero.querySelector<SVGElement>("[data-mugi]");
+    const mascot = hero.querySelector<HTMLElement>("[data-mugi]");
     let frame = 0;
 
     const reset = () => {

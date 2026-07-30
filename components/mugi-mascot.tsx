@@ -1,14 +1,30 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MUGI_ANIMATIONS } from "../lib/mugi-animations";
 import { MugiSprite } from "./mugi-sprite";
 
 export function MugiMascot() {
   const [laughing, setLaughing] = useState(false);
+  const [laughReady, setLaughReady] = useState(false);
   const dragging = useRef<{ pointerId: number; startX: number; startY: number } | null>(null);
   const hasMoved = useRef(false);
   const returnTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  useEffect(() => {
+    const image = new Image();
+    image.src = MUGI_ANIMATIONS.laugh.src;
+
+    const markReady = () => setLaughReady(true);
+    if (image.complete) {
+      markReady();
+      return;
+    }
+
+    image.decode?.().then(markReady).catch(markReady);
+    image.addEventListener("load", markReady, { once: true });
+    return () => image.removeEventListener("load", markReady);
+  }, []);
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
     event.preventDefault();
@@ -54,7 +70,7 @@ export function MugiMascot() {
       onPointerUp={(event) => release(event.currentTarget)}
       onPointerCancel={(event) => release(event.currentTarget)}
     >
-      <MugiSprite animation={laughing ? MUGI_ANIMATIONS.laugh : MUGI_ANIMATIONS.idle} />
+      <MugiSprite animation={laughing && laughReady ? MUGI_ANIMATIONS.laugh : MUGI_ANIMATIONS.idle} />
     </div>
   );
 }

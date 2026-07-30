@@ -4,26 +4,37 @@ import { useEffect, useRef, useState } from "react";
 import { MUGI_ANIMATIONS } from "../lib/mugi-animations";
 import { MugiSprite } from "./mugi-sprite";
 
+const MUGI_ASSETS = [
+  ...MUGI_ANIMATIONS.idle.frames,
+  MUGI_ANIMATIONS.laugh.src,
+];
+
 export function MugiMascot() {
   const [laughing, setLaughing] = useState(false);
-  const [laughReady, setLaughReady] = useState(false);
+  const [assetsReady, setAssetsReady] = useState(false);
   const dragging = useRef<{ pointerId: number; startX: number; startY: number } | null>(null);
   const hasMoved = useRef(false);
   const returnTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
-    const image = new Image();
-    image.src = MUGI_ANIMATIONS.laugh.src;
+    let cancelled = false;
+    const preload = MUGI_ASSETS.map((src) => {
+      const image = new Image();
+      image.src = src;
+      if (image.complete) return Promise.resolve();
+      return image.decode?.().catch(() => undefined) ?? new Promise<void>((resolve) => {
+        image.addEventListener("load", () => resolve(), { once: true });
+        image.addEventListener("error", () => resolve(), { once: true });
+      });
+    });
 
-    const markReady = () => setLaughReady(true);
-    if (image.complete) {
-      markReady();
-      return;
-    }
+    Promise.all(preload).then(() => {
+      if (!cancelled) setAssetsReady(true);
+    });
 
-    image.decode?.().then(markReady).catch(markReady);
-    image.addEventListener("load", markReady, { once: true });
-    return () => image.removeEventListener("load", markReady);
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const onPointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -70,7 +81,7 @@ export function MugiMascot() {
       onPointerUp={(event) => release(event.currentTarget)}
       onPointerCancel={(event) => release(event.currentTarget)}
     >
-      <MugiSprite animation={laughing && laughReady ? MUGI_ANIMATIONS.laugh : MUGI_ANIMATIONS.idle} />
+      <MugiSprite animation={laughing && assetsReady ? MUGI_ANIMATIONS.laugh : MUGI_ANIMATIONS.idle} />
     </div>
   );
 }

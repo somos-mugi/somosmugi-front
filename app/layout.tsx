@@ -13,6 +13,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="es">
+      <head>
+        <link rel="preload" as="image" href="/mugi/idle/mugi-idle.webp" type="image/webp" />
+        <link rel="preload" as="image" href="/mugi/laugh/mugi-laugh-sheet.webp" type="image/webp" />
+      </head>
       <body className={`${sans.variable} ${serif.variable}`}>{children}</body>
     </html>
   );

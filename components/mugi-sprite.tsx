@@ -14,22 +14,19 @@ export function MugiSprite({ animation }: { animation: MugiAnimation }) {
     return () => window.clearInterval(timer);
   }, [animation, frameCount]);
 
-  if (animation.kind === "frames") {
-    return <img className="mugi-sprite" src={animation.frames[frame]} alt="" draggable={false} />;
-  }
-
-  const column = frame % animation.columns;
-  const row = Math.floor(frame / animation.columns);
-  const x = animation.columns === 1 ? 0 : (column / (animation.columns - 1)) * 100;
-  const y = animation.rows === 1 ? 0 : (row / (animation.rows - 1)) * 100;
+  const isSheet = animation.kind === "sheet";
+  const column = isSheet ? frame % animation.columns : 0;
+  const row = isSheet ? Math.floor(frame / animation.columns) : 0;
+  const x = isSheet && animation.columns > 1 ? (column / (animation.columns - 1)) * 100 : 50;
+  const y = isSheet && animation.rows > 1 ? (row / (animation.rows - 1)) * 100 : 50;
 
   return (
     <span
-      className="mugi-sprite mugi-sprite-sheet"
+      className="mugi-sprite"
       aria-hidden="true"
       style={{
-        backgroundImage: `url(${animation.src})`,
-        backgroundSize: `${animation.columns * 100}% ${animation.rows * 100}%`,
+        backgroundImage: `url(${isSheet ? animation.src : animation.frames[frame]})`,
+        backgroundSize: isSheet ? `${animation.columns * 100}% ${animation.rows * 100}%` : "contain",
         backgroundPosition: `${x}% ${y}%`,
       }}
     />
